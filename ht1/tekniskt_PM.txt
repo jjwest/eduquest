@@ -1,0 +1,11 @@
+Tekniskt PM för app: "awesome"
+
+Analys av hur appar används blir allt viktigare, och används ofta för att... (REFERENS)
+
+En tjänst som erbjuds är ... (REFERENS)
+
+Best practice i dagsläget verkar vara ... (REFERENS)
+
+Referenslista
+
+... 

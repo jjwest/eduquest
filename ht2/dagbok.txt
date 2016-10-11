@@ -1,0 +1,5 @@
+Dagbok för app: "awesome"
+
+v42 Har skapat första version av appens fyra skärmar, och kan gå mellan dem.
+v43 Lyckades koppla till Google Maps, och kan nu visa position på kartan.
+v44 ...
