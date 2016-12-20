@@ -1,5 +1,11 @@
-Tidsplan för app: "awesome"
+Tidsplan för app: "Eduquest"
 
-v42
-v43
-...
+v42..v50 Prokrastinera
+
+v51 Färdigställ applikationens initiella uppsättnings-vy, 
+    börja på meny-vy för att visa kategorier.
+
+v52 Färdigställ meny-vy och och frågeställnings-vy.
+    Prototypa en enkel webbsida för att använda som server.
+
+v1  Eventuell buggtestning och förfining.
