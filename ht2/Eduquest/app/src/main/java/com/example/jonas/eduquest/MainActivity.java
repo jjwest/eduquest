@@ -1,6 +1,8 @@
 package com.example.jonas.eduquest;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -10,8 +12,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.io.InputStream;
 import java.net.URL;
@@ -19,7 +19,6 @@ import java.net.URL;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    final String UPSTREAM_FILENAME = "upstream.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,30 +26,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (hasSavedUpstream()) {
-            System.out.println("BYTER VY");
+            changeView();
         }
     }
 
     private boolean hasSavedUpstream() {
-        try {
-            FileInputStream fis = openFileInput(UPSTREAM_FILENAME);
-            byte [] input = new byte[150];
-            fis.read(input);
-            String upstream = input.toString();
+        SharedPreferences prefs = getPreferences(0);
+        String upstream = prefs.getString("upstream", "");
 
-            return !upstream.isEmpty();
-
-        } catch (IOException e) {
-            return false;
-        }
-
+        return upstream.length() != 0;
     }
 
-    public void verifyValidUpstream(View view) {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    private void changeView() {
+        Intent intent = new Intent(this, CategorySelectionActivity.class);
+        startActivity(intent);
+    }
 
-        if (networkInfo != null && networkInfo.isConnected()) {
+    public void onBtnClicked(View v) {
+        verifyAndSaveValidUpstream(v);
+    }
+
+    public void verifyAndSaveValidUpstream(View view) {
+        if (hasInternetConnection()) {
             PingUpstreamTask ping = new PingUpstreamTask();
             EditText addrTextField = (EditText) findViewById(R.id.upstreamAddressText);
             String url = addrTextField.getText().toString();
@@ -59,6 +56,22 @@ public class MainActivity extends AppCompatActivity {
         } else {
             DialogFragment dialog = new FirstStartupDialogs();
             dialog.show(getSupportFragmentManager(), "nointernet");
+        }
+    }
+
+    private boolean hasInternetConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    private void saveUpstream(String url) {
+        SharedPreferences prefs = getPreferences(0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("upstream", url);
+        if (editor.commit()) {
+            System.out.println("SPARADE SETTINGS");
         }
     }
 
@@ -77,43 +90,37 @@ public class MainActivity extends AppCompatActivity {
             try {
                 URL url = new URL(myurl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);
                 conn.setRequestMethod("GET");
                 conn.setDoInput(true);
-                // Starts the query
                 conn.connect();
-                Integer response = conn.getResponseCode();
-                return response.toString();
+                Integer statusCode = conn.getResponseCode();
 
-                // Makes sure that the InputStream is closed after the app is
-                // finished using it.
-            } finally {
+                return statusCode.toString();
+
+            } catch (Exception e) {
+                System.out.println("Exception: " + e.getMessage());
                 if (is != null) {
                     is.close();
                 }
+
+                return "500";
             }
         }
 
         protected void onPostExecute(UrlResponse result) {
-            if (result.getStatusCode().equals("200") || result.getStatusCode().startsWith("3")) {
+            if (validUpstream(result)) {
                 saveUpstream(result.getUrl());
+                changeView();
             } else {
                 DialogFragment dialog = new InvalidUpstreamDialog();
                 dialog.show(getSupportFragmentManager(), "noupstream");
             }
         }
 
-        private void saveUpstream(String url) {
-            try {
-                FileOutputStream fos = openFileOutput(UPSTREAM_FILENAME, Context.MODE_PRIVATE);
-                fos.write(url.getBytes());
-                fos.close();
-                System.out.println("SPARAT");
-            }
-            catch (IOException e) {
-                // FIXA FELMEDDELANDE
-            }
+        private boolean validUpstream(UrlResponse result) {
+            return result.getStatusCode().equals("200") || result.getStatusCode().startsWith("3");
         }
     }
 }

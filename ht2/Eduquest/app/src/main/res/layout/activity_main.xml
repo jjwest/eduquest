@@ -22,14 +22,14 @@
 
     <Button
         android:text="Done"
-        android:onClick="verifyValidUpstream"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="74dp"
         android:id="@+id/verifyAndSetUpstream"
         style="@style/Widget.AppCompat.Button"
         android:layout_below="@+id/upstreamAddressText"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="onBtnClicked" />
 
     <EditText
         android:layout_width="wrap_content"
