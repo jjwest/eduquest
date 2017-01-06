@@ -26,18 +26,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (hasSavedUpstream()) {
-            changeView();
+            changeToCategoryView();
         }
     }
 
     private boolean hasSavedUpstream() {
-        SharedPreferences prefs = getPreferences(0);
+        SharedPreferences prefs = getSharedPreferences("settings", 0);
         String upstream = prefs.getString("upstream", "");
 
         return upstream.length() != 0;
     }
 
-    private void changeView() {
+    private void changeToCategoryView() {
         Intent intent = new Intent(this, CategorySelectionActivity.class);
         startActivity(intent);
     }
@@ -67,12 +67,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveUpstream(String url) {
-        SharedPreferences prefs = getPreferences(0);
+        SharedPreferences prefs = getSharedPreferences("settings", 0);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("upstream", url);
-        if (editor.commit()) {
-            System.out.println("SPARADE SETTINGS");
-        }
+        editor.commit();
     }
 
     private class PingUpstreamTask extends AsyncTask<String, Void, UrlResponse> {
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(UrlResponse result) {
             if (validUpstream(result)) {
                 saveUpstream(result.getUrl());
-                changeView();
+                changeToCategoryView();
             } else {
                 DialogFragment dialog = new InvalidUpstreamDialog();
                 dialog.show(getSupportFragmentManager(), "noupstream");
