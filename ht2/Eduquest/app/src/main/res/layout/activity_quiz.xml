@@ -10,4 +10,66 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.jonas.eduquest.QuizActivity">
 
+    <TextView
+        android:text="Question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="65dp"
+        android:id="@+id/quizHeader"
+        android:layout_marginStart="68dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textSize="30sp" />
+
+    <Button
+        android:text="Next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nextQuestionBtn"
+        android:visibility="invisible"
+        android:onClick="nextQuestion"
+        android:layout_marginTop="79dp"
+        android:layout_below="@+id/answerHeader"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Show answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/showAnswerBtn"
+        android:onClick="showAnswer"
+        android:layout_alignBaseline="@+id/nextQuestionBtn"
+        android:layout_alignBottom="@+id/nextQuestionBtn"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/answerHeader"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        android:layout_alignBottom="@+id/answerText"
+        android:layout_toStartOf="@+id/showAnswerBtn"
+        android:layout_marginEnd="33dp"
+        android:layout_marginBottom="39dp"
+        android:textStyle="normal|bold"
+        android:text="Answer" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="146dp"
+        android:id="@+id/answerText"
+        android:visibility="invisible"
+        android:layout_below="@+id/questionText"
+        android:layout_alignStart="@+id/quizHeader" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:id="@+id/questionText"
+        android:layout_below="@+id/quizHeader"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
