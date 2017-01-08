@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CategorySelectionActivity"></activity>
+        <activity android:name=".QuizActivity"></activity>
     </application>
 
 </manifest>

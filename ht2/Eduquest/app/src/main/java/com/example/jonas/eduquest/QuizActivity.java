@@ -4,11 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Random;
 
@@ -17,9 +19,8 @@ public class QuizActivity extends AppCompatActivity {
     private Button mNextQuestionBtn;
     private JSONArray mQuestions;
     private int mCurrentQuestionId = 0;
-    private TextView mCurrentQuestionText;
-    private TextView mCurrentAnswerText;
-    private TextView mAnswerHeader;
+    private TextView mQuizHeader;
+    private TextView mCurrentQuizText;
     private Random mRandom = new Random();
 
 
@@ -30,9 +31,8 @@ public class QuizActivity extends AppCompatActivity {
 
         mShowAnswerBtn = (Button)findViewById(R.id.showAnswerBtn);
         mNextQuestionBtn = (Button)findViewById(R.id.nextQuestionBtn);
-        mCurrentQuestionText = (TextView)findViewById(R.id.questionText);
-        mCurrentAnswerText = (TextView)findViewById(R.id.answerText);
-        mAnswerHeader = (TextView)findViewById(R.id.answerHeader);
+        mQuizHeader = (TextView)findViewById(R.id.quizHeader);
+        mCurrentQuizText = (TextView)findViewById(R.id.quizText);
 
         try {
             mQuestions = new JSONArray(getIntent().getStringExtra("questions"));
@@ -49,9 +49,8 @@ public class QuizActivity extends AppCompatActivity {
             id = mRandom.nextInt(mQuestions.length());
             if (id != mCurrentQuestionId) {
                 try {
-                    JSONObject obj = mQuestions.getJSONObject(id);
-                    mCurrentQuestionText.setText(obj.getString("question"));
-                    mCurrentAnswerText.setText(obj.getString("answer"));
+                    JSONObject question = mQuestions.getJSONObject(id);
+                    mCurrentQuizText.setText(question.getString("question"));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -60,16 +59,23 @@ public class QuizActivity extends AppCompatActivity {
         } while (id == mCurrentQuestionId);
 
         mCurrentQuestionId = id;
-        mCurrentAnswerText.setVisibility(View.INVISIBLE);
+        mQuizHeader.setText("Question");
         mShowAnswerBtn.setVisibility(View.VISIBLE);
         mNextQuestionBtn.setVisibility(View.INVISIBLE);
-        mAnswerHeader.setVisibility(View.INVISIBLE);
     }
 
     public void showAnswer(View view) {
-        mCurrentAnswerText.setVisibility(View.VISIBLE);
+        try {
+            JSONObject question = mQuestions.getJSONObject(mCurrentQuestionId);
+            mCurrentQuizText.setText(question.getString("answer"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ScrollView textArea = (ScrollView)findViewById(R.id.quizScrollContainer);
+        textArea.scrollTo(0, 0);
+        mQuizHeader.setText("Answer");
         mShowAnswerBtn.setVisibility(View.INVISIBLE);
         mNextQuestionBtn.setVisibility(View.VISIBLE);
-        mAnswerHeader.setVisibility(View.VISIBLE);
     }
 }
