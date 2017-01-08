@@ -12,11 +12,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import java.net.HttpURLConnection;
-import java.io.InputStream;
-import java.net.URL;
-
-import java.io.IOException;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,11 +47,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void verifyAndSaveValidUpstream(View view) {
         if (hasInternetConnection()) {
-            PingUpstreamTask ping = new PingUpstreamTask();
             EditText addrTextField = (EditText) findViewById(R.id.upstreamAddressText);
-            String url = addrTextField.getText().toString();
-            ping.execute(url);
+            final String baseUrl = addrTextField.getText().toString();
+            String requestUrl = baseUrl.concat("/eduquestprovider");
 
+            StringRequest request = new StringRequest(Request.Method.GET, requestUrl,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            if (response.equals("isProvider")) {
+                                saveUpstream(baseUrl);
+                                changeToCategoryView();
+                                System.out.println("ALL IS WELL");
+                            } else {
+                                DialogFragment dialog = new InvalidUpstreamDialog();
+                                dialog.show(getSupportFragmentManager(), "noupstream");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+
+            NetworkManager.getInstance(this).addToRequestQueue(request);
         } else {
             DialogFragment dialog = new FirstStartupDialogs();
             dialog.show(getSupportFragmentManager(), "nointernet");
@@ -71,54 +91,5 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("upstream", url);
         editor.commit();
-    }
-
-    private class PingUpstreamTask extends AsyncTask<String, Void, UrlResponse> {
-        protected UrlResponse doInBackground(String... urls) {
-            try {
-                return new UrlResponse(urls[0], getResponseCode(urls[0]));
-            } catch (IOException e) {
-                return new UrlResponse(urls[0], "404");
-            }
-        }
-
-        private String getResponseCode(String myurl) throws IOException {
-            InputStream is = null;
-
-            try {
-                URL url = new URL(myurl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("GET");
-                conn.setDoInput(true);
-                conn.connect();
-                Integer statusCode = conn.getResponseCode();
-
-                return statusCode.toString();
-
-            } catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
-                if (is != null) {
-                    is.close();
-                }
-
-                return "500";
-            }
-        }
-
-        protected void onPostExecute(UrlResponse result) {
-            if (validUpstream(result)) {
-                saveUpstream(result.getUrl());
-                changeToCategoryView();
-            } else {
-                DialogFragment dialog = new InvalidUpstreamDialog();
-                dialog.show(getSupportFragmentManager(), "noupstream");
-            }
-        }
-
-        private boolean validUpstream(UrlResponse result) {
-            return result.getStatusCode().equals("200") || result.getStatusCode().startsWith("3");
-        }
     }
 }
