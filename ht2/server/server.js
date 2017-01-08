@@ -1,12 +1,50 @@
-var express = require("express");
-var app = express();
+const express = require("express")
+const bodyParser = require("body-parser")
+const app = express()
 
-app.use(express.static("public"));
+const data = {
+    "Ellära": [
+	{
+	    "question": "Spänning mäts i",
+	    "answer": "Volt"
+	}
+    ],
+    "Programmering": [
+	{
+	    "question": "Nämn tre systemspråk",
+	    "answer": "C, C++, Rust"
+	},
+	{
+	    "question": "Vad är en pekare",
+	    "answer": "En variabel som lagrar minnesadresser"
+	}
+    ]
+}
 
-app.get('/', function(request, response) {
-    response.status(200).send("Hello");
-});
+app.use(bodyParser.urlencoded({
+    extended: true
+}))
 
-app.listen(3000, function() {
-    console.log("Running server on port 3000");
-});
+app.use(bodyParser.json())
+
+app.post("/questions", (request, response) => {
+    const categories = request.body
+    const questions = categories
+	  .map(c => data[c])
+	  .reduce((sum, c) => sum.concat(c), [])
+
+    response.send(questions)
+})
+
+app.get("/categories", (request, response) => {
+    const categories = Object.keys(data)
+    response.send(categories)
+})
+
+app.get("/", (request, response) => {
+    response.status(200).send("Hello")
+})
+
+app.listen(3000, () => {
+    console.log("Running server on port 3000")
+})
