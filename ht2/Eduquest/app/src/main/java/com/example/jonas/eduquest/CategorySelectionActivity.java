@@ -3,6 +3,7 @@ package com.example.jonas.eduquest;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -28,25 +29,28 @@ public class CategorySelectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_selection);
         loadCategoryMenu();
-
     }
 
     private void loadCategoryMenu() {
-        final String upstreamUrl = getUpstream() + "/categories";
-        System.out.println("Upstream: " + upstreamUrl);
-
+        final String upstreamUrl = getUpstream().concat("/categories");
         JsonArrayRequest request = new JsonArrayRequest
                 (upstreamUrl, new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        createMenuItems(response);
+                        if (gotContent(response)) {
+                            createMenuItems(response);
+                        } else {
+                            DialogFragment dialog = new InvalidUpstreamDialog();
+                            dialog.show(getSupportFragmentManager(), "noupstream");
+                        }
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        DialogFragment dialog = new InvalidUpstreamDialog();
+                        dialog.show(getSupportFragmentManager(), "noupstream");
                     }
                 });
 
@@ -58,6 +62,10 @@ public class CategorySelectionActivity extends AppCompatActivity {
         String url = prefs.getString("upstream", "");
 
         return url;
+    }
+
+    private boolean gotContent(JSONArray response) {
+        return response.length() != 0;
     }
 
     private void createMenuItems(final JSONArray categories) {
@@ -87,22 +95,37 @@ public class CategorySelectionActivity extends AppCompatActivity {
             }
     }
 
-    public void getQuestionsFromServer(View v) {
-        final String upstreamUrl = getUpstream() + "/questions";
+    public void onCategoryBtnClicked(View v) {
+        if (!mCategories.isEmpty()) {
+            getQuestionsFromServer();
+        } else {
+            DialogFragment dialog = new NoCategorySelectedDialog();
+            dialog.show(getSupportFragmentManager(), "nocategory");
+        }
+    }
+
+    public void getQuestionsFromServer() {
+        final String upstreamUrl = getUpstream().concat("/questions");
         JSONArray params = new JSONArray(mCategories);
         JsonArrayRequest request = new JsonArrayRequest
                 (Request.Method.POST, upstreamUrl, params, new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        changeToQuizActivity(response);
+                        if (response.length() > 0) {
+                            changeToQuizActivity(response);
+                        } else {
+                            DialogFragment dialog = new NoQuestionsDialog();
+                            dialog.show(getSupportFragmentManager(), "noquestion");
+                        }
+
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                        System.out.println("ERROR: " + error.getMessage());
+                        DialogFragment dialog = new InvalidUpstreamDialog();
+                        dialog.show(getSupportFragmentManager(), "noupstream");
                     }
                 });
 
@@ -112,7 +135,6 @@ public class CategorySelectionActivity extends AppCompatActivity {
     private void changeToQuizActivity(JSONArray questions) {
         Intent intent = new Intent(getApplicationContext(), QuizActivity.class);
         intent.putExtra("questions", questions.toString());
-        System.out.println("Questions: " + questions);
         startActivity(intent);
     }
 

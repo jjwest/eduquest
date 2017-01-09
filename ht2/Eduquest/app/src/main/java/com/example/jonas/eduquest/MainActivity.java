@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 
@@ -24,9 +24,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (hasSavedUpstream()) {
+        if (!hasInternetConnection()) {
+            DialogFragment dialog = new NoInternetConnectionDialog();
+            dialog.show(getSupportFragmentManager(), "nointernet");
+        } else if (hasSavedUpstream()) {
             changeToCategoryView();
         }
+    }
+
+    private boolean hasInternetConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     private boolean hasSavedUpstream() {
@@ -42,49 +52,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBtnClicked(View v) {
-        verifyAndSaveValidUpstream(v);
+        validateAndSaveUpstream(v);
     }
 
-    public void verifyAndSaveValidUpstream(View view) {
-        if (hasInternetConnection()) {
+    public void validateAndSaveUpstream(View view) {
             EditText addrTextField = (EditText) findViewById(R.id.upstreamAddressText);
-            final String baseUrl = addrTextField.getText().toString();
-            String requestUrl = baseUrl.concat("/eduquestprovider");
+            String url = addrTextField.getText().toString();
 
-            StringRequest request = new StringRequest(Request.Method.GET, requestUrl,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (response.equals("isProvider")) {
-                                saveUpstream(baseUrl);
-                                changeToCategoryView();
-                                System.out.println("ALL IS WELL");
-                            } else {
-                                DialogFragment dialog = new InvalidUpstreamDialog();
-                                dialog.show(getSupportFragmentManager(), "noupstream");
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    });
-
-            NetworkManager.getInstance(this).addToRequestQueue(request);
-        } else {
-            DialogFragment dialog = new FirstStartupDialogs();
-            dialog.show(getSupportFragmentManager(), "nointernet");
-        }
+            if (!validUrl(url)) {
+                DialogFragment dialog = new InvalidUrlDialog();
+                dialog.show(getSupportFragmentManager(), "invalidurl");
+                return;
+            } else {
+                sendValidationRequest(url);
+            }
     }
 
-    private boolean hasInternetConnection() {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
+    private boolean validUrl(String url) {
+        return Patterns.WEB_URL.matcher(url).matches();
     }
+
+    private void sendValidationRequest(final String baseUrl) {
+        String requestUrl = baseUrl.concat("/eduquestprovider");
+        StringRequest request = new StringRequest(Request.Method.GET, requestUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (response.equals("isProvider")) {
+                            saveUpstream(baseUrl);
+                            changeToCategoryView();
+                        } else {
+                            DialogFragment dialog = new InvalidUpstreamDialog();
+                            dialog.show(getSupportFragmentManager(), "noupstream");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        DialogFragment dialog = new InvalidUpstreamDialog();
+                        dialog.show(getSupportFragmentManager(), "noupstream");
+                    }
+                });
+
+        NetworkManager.getInstance(this).addToRequestQueue(request);
+    }
+
+
 
     private void saveUpstream(String url) {
         SharedPreferences prefs = getSharedPreferences("settings", 0);

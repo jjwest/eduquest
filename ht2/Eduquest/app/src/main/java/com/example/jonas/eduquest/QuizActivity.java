@@ -1,5 +1,6 @@
 package com.example.jonas.eduquest;
 
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.Random;
 
@@ -37,26 +37,42 @@ public class QuizActivity extends AppCompatActivity {
         try {
             mQuestions = new JSONArray(getIntent().getStringExtra("questions"));
         } catch (Exception e) {
-            e.printStackTrace();
+            // This is never reached. Content is guaranteed to be valid JSON.
         }
 
-        nextQuestion(getCurrentFocus());
+        nextQuestion();
     }
 
-    public void nextQuestion(View view) {
-        int id;
-        do {
-            id = mRandom.nextInt(mQuestions.length());
-            if (id != mCurrentQuestionId) {
-                try {
-                    JSONObject question = mQuestions.getJSONObject(id);
-                    mCurrentQuizText.setText(question.getString("question"));
+    public void onNextQuestionBtnClicked(View v) {
+        nextQuestion();
+    }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
+    public void nextQuestion() {
+        int id;
+        if (mQuestions.length() == 1) {
+            id = 0;
+            try {
+                JSONObject question = mQuestions.getJSONObject(id);
+                mCurrentQuizText.setText(question.getString("question"));
+            } catch (JSONException e) {
+                // This is never reached.
             }
-        } while (id == mCurrentQuestionId);
+        }
+        else {
+            do {
+                id = mRandom.nextInt(mQuestions.length());
+                if (id != mCurrentQuestionId) {
+                    try {
+                        JSONObject question = mQuestions.getJSONObject(id);
+                        mCurrentQuizText.setText(question.getString("question"));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } while (id == mCurrentQuestionId);
+        }
 
         mCurrentQuestionId = id;
         mQuizHeader.setText("Question");
@@ -69,7 +85,7 @@ public class QuizActivity extends AppCompatActivity {
             JSONObject question = mQuestions.getJSONObject(mCurrentQuestionId);
             mCurrentQuizText.setText(question.getString("answer"));
         } catch (Exception e) {
-            e.printStackTrace();
+            // This is never reached.
         }
 
         ScrollView textArea = (ScrollView)findViewById(R.id.quizScrollContainer);

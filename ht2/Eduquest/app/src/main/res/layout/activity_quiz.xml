@@ -65,10 +65,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/nextQuestionBtn"
             android:visibility="invisible"
-            android:onClick="nextQuestion"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="65dp" />
+            android:layout_marginBottom="65dp"
+            android:onClick="onNextQuestionBtnClicked" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -6,13 +6,16 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-public class FirstStartupDialogs extends DialogFragment {
+/**
+ * Created by jonas on 2017-01-09.
+ */
+
+public class NoQuestionsDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("No connection found!");
-        builder.setMessage("Eduquest requires an active internet connection the " +
-                "first time it is run.")
+        builder.setTitle("Oops!");
+        builder.setMessage("This category did not contain any questions.")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //
