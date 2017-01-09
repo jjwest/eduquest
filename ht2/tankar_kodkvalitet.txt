@@ -1,0 +1,4 @@
+Jag är i överlag nöjd med kodkvalitén. Jag har försökt att abstrahera bort implementationsdetaljer så
+gott det går, och följt den så kallade "step down rule" som beskrivs i boken Clean Code, där varje
+funktion som anropas följer direkt efter funktionen där den anropades. Detta leder till att man kan
+följa anropsflödet genom att läsa källkoden sekventiellt, uppifrån och ner.
