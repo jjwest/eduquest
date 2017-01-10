@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1035929191887",
+    "firebase_url": "https://eduquest-ffe01.firebaseio.com",
+    "project_id": "eduquest-ffe01",
+    "storage_bucket": "eduquest-ffe01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035929191887:android:77d9906da7a9d8f9",
+        "android_client_info": {
+          "package_name": "com.example.jonas.eduquest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035929191887-5aprdfvhoof1h02h59jqjnkhu4vt53f8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jonas.eduquest",
+            "certificate_hash": "73FEB65866072FD6E84DBC77EAB2FB0090C8FFFB"
+          }
+        },
+        {
+          "client_id": "1035929191887-kslshgo8mmo9k9gke6rkjqa4fb1pke5v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhiRGUKkpMGZUs-BBtzKyZdFKstFIO54E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1035929191887-kslshgo8mmo9k9gke6rkjqa4fb1pke5v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

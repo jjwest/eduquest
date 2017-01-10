@@ -3,6 +3,7 @@ package com.example.jonas.eduquest;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.util.BuddhistCalendar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONArray;
 
@@ -22,12 +24,15 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 public class CategorySelectionActivity extends AppCompatActivity {
+    private FirebaseAnalytics mFireBaseAnalytics;
     private ArrayList<String> mCategories = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_selection);
+
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(this);
         loadCategoryMenu();
     }
 
@@ -105,6 +110,8 @@ public class CategorySelectionActivity extends AppCompatActivity {
     }
 
     public void getQuestionsFromServer() {
+        logCategories();
+
         final String upstreamUrl = getUpstream().concat("/questions");
         JSONArray params = new JSONArray(mCategories);
         JsonArrayRequest request = new JsonArrayRequest
@@ -130,6 +137,14 @@ public class CategorySelectionActivity extends AppCompatActivity {
                 });
 
         NetworkManager.getInstance(this).addToRequestQueue(request);
+    }
+
+    private void logCategories() {
+        for (String category : mCategories) {
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.VALUE, category);
+            mFireBaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
+        }
     }
 
     private void changeToQuizActivity(JSONArray questions) {

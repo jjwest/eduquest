@@ -16,13 +16,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class MainActivity extends AppCompatActivity {
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         if (!hasInternetConnection()) {
             DialogFragment dialog = new NoInternetConnectionDialog();
@@ -59,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
             EditText addrTextField = (EditText) findViewById(R.id.upstreamAddressText);
             String url = addrTextField.getText().toString();
 
-            if (!validUrl(url)) {
+            if (validUrl(url)) {
+                sendValidationRequest(url);
+            } else {
+
                 DialogFragment dialog = new InvalidUrlDialog();
                 dialog.show(getSupportFragmentManager(), "invalidurl");
-                return;
-            } else {
-                sendValidationRequest(url);
             }
     }
 
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                             saveUpstream(baseUrl);
                             changeToCategoryView();
                         } else {
+                            logInvalidUpstream(baseUrl);
                             DialogFragment dialog = new InvalidUpstreamDialog();
                             dialog.show(getSupportFragmentManager(), "noupstream");
                         }
@@ -101,9 +106,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void saveUpstream(String url) {
+        logUpstream(url);
         SharedPreferences prefs = getSharedPreferences("settings", 0);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("upstream", url);
         editor.commit();
+    }
+
+    private void logUpstream(String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.VALUE, url);
+        mFirebaseAnalytics.logEvent("upstream", bundle);
+    }
+
+    private void logInvalidUpstream(String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.VALUE, url);
+        mFirebaseAnalytics.logEvent("invalid_upstream", bundle);
     }
 }
