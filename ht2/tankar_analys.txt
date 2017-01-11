@@ -1,0 +1,18 @@
+Min målgrupp är alla institutioner eller organisationer som fokuserar på någon
+form av lärande. Detta kan vara allt från akademiska fakulteter, till mindre
+organisationer. En viktig säljpunkt för appen är att den är lätt att använda.
+Tanken är att implementera en färdig hemsida i konjunktion med appen,
+som agerar både som backend, men som även har en hemsida där kunden kan logga in
+och interaktivt ändra på kategorier, frågor och svar. Just detta tror jag är en
+viktig del för att appen ska få ett genomslag.
+
+För att hitta potentiella kunder kan det vara bra att börja lokalt och närma
+sig t ex LiU i sig, men även andra företag. Anledningen till att jag valde
+att skapa just en sån här applikation var just på förfrågan av försvarsmaktens
+flygskola här i Linköping. Detta kan ge en bra grund för att få grundläggande
+feedback som kan göra det enklare att sälja in produkten hos andra lärosäten.
+
+Försäljningsmodellen jag tänker mig är att sälja hela paketet för en engångssumma.
+En eventuell freemium-modell med annonser känns helt uteslutet, då appens styrka
+är dess simplicitet. Att införa annonser hade varit ett sort störningsmoment
+som jag tror starkt kan skada användandet.
