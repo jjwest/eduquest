@@ -1,6 +1,8 @@
-Jag är i överlag osäker gällande kodkvalitén. Jag har försökt att abstrahera bort implementationsdetaljer så
-gott det går, och följt den så kallade "step down rule" som beskrivs i boken Clean Code, där varje
-funktion som anropas följer direkt efter funktionen där den anropades. Detta leder till att man kan
-följa anropsflödet genom att läsa källkoden sekventiellt, uppifrån och ner. Detta är jag nöjd med.
-Däremot kände jag mig ganska vilsen angående vad som anses som best practices på vissa ställen,
-och det finns säkerligen många saker att förbättra. 
+Jag är i överlag osäker gällande kodkvalitén. Jag har försökt att abstrahera
+bort implementationsdetaljer så gott det går, och följt den så kallade "step
+down rule" som beskrivs i boken Clean Code, där varje funktion som anropas
+följer direkt efter funktionen där den anropades. Detta leder till att man kan
+följa anropsflödet genom att läsa källkoden sekventiellt, uppifrån och
+ner. Detta är jag nöjd med.  Däremot kände jag mig ganska vilsen angående vad
+som anses som best practices på vissa ställen, och det finns säkerligen många
+saker att förbättra.
