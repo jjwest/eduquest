@@ -3,7 +3,9 @@ genom att förse möjligheten att göra quizfrågor inför specifika prov på mo
 
 Eduquest består av två delar: en klient i form av en Android-applikation, och en server i form
 av en webbserver. Via webbservern kan lärare skapa nya kategorier av frågor för kurser, och sedan populera
-dessa med par av frågor och svar. 
+dessa med par av frågor och svar. Tanken är att Eduquest även ska kunna förse potentiella med en färdig
+hemsida med ett interaktivt gränssnitt för att sköta detta, men det har inte implementerats som en del av kursen.
+Istället finns en primitiv server tillgänglig för testning.
 
 När användaren startar applikationen för första gången kommer de att bli tillfrågade att ange
 en adress till den tilltänkta servern de ska använda. 
@@ -18,6 +20,12 @@ på en knapp som visar det givna svaret som läraren valt. Därefter fortsätter
 
 
 Länk till screencast på youtube.
+
+Användningsmanual
+https://www.youtube.com/watch?v=y2S7dEvfVT4
+
+Teknisk genomgång
+https://www.youtube.com/watch?v=Jq2q02FtKqQ
 
 Instruktioner till källfilerna (nödvändiga bibliotek), etc. 
 
@@ -37,9 +45,12 @@ några frågor sker här. Om allt är okej, slussas användaren vidare till Quiz
 QuizActivity.java ansvarar för att slumpa fram frågor från den tillgängliga poolen, samt
 att visa frågorna och dess svar.
 
-Både MainActivity and CategorySelectionActivity använder sig av Google's externa
-bibliotek Volley för att hantera alla HTTP-requests.
-
 Utöver dessa finns fem stycken olika dialogfragment: InvalidUpstreamDialog.java, InvalidUrlDialog.java,
 NoCategorySelectedDialog.java, NoInternetConnectionDialog.java samt NoQuestionsDialog.java.
 Samtliga fragment används för att notifiera användaren om fel som kan uppstå under appens körning.
+
+Både MainActivity and CategorySelectionActivity använder sig av Google's externa
+bibliotek Volley för att hantera alla HTTP-requests, samt Firebase för att hantera
+loggning av användarnas aktivitet som utgör en grund för att kunna analysera
+användarnas utnyttjande av applikationen.
+
