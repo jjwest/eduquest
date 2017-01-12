@@ -8,15 +8,20 @@ hemsida med ett interaktivt gränssnitt för att sköta detta, men det har inte 
 Istället finns en primitiv server tillgänglig för testning.
 
 När användaren startar applikationen för första gången kommer de att bli tillfrågade att ange
-en adress till den tilltänkta servern de ska använda. 
-Denna adress kommer sedan att sparas på telefonen så att användaren ej behöver upprepa detta varje gång, 
-och en möjlighet att ändra denna i efterhand finns. Användaren kommer sedan att presenteras med en meny av möjliga 
+en adress till den tilltänkta servern de ska använda.
+Denna adress kommer sedan att sparas på telefonen så att användaren ej behöver upprepa detta varje gång,
+och en möjlighet att ändra denna i efterhand finns. Användaren kommer sedan att presenteras med en meny av möjliga
 kurser/kategorier, där antingen en eller flera kategorier kan väljas. När kategorier är valda
-kommer en fråga att presenteras. Här kan användaren fundera över sitt svar, och sedan trycka 
+kommer en fråga att presenteras. Här kan användaren fundera över sitt svar, och sedan trycka
 på en knapp som visar det givna svaret som läraren valt. Därefter fortsätter det till nästa fråga.
 
 
-
+För att testa applikationen krävs att en serverbackend är igång. I projektet finns simpelt
+exempel för testsyften. Servern baserad på node.js. För att starta servern krävs först
+att node.js är installerat. Starta sedan en terminal som navigerar till serverns katalog
+och kör kommandonda "npm install" för att ladda ner alla dependencies, följt av
+"npm start" för att starta servern. Servern använder sig av port 3000. För att ansluta
+till denna via en emulator anges adressen http://10.0.2.2:3000.
 
 
 Länk till screencast på youtube.
@@ -27,12 +32,12 @@ https://www.youtube.com/watch?v=y2S7dEvfVT4
 Teknisk genomgång
 https://www.youtube.com/watch?v=Jq2q02FtKqQ
 
-Instruktioner till källfilerna (nödvändiga bibliotek), etc. 
+Instruktioner till källfilerna (nödvändiga bibliotek), etc.
 
 Eduquest består av tre primära aktiviteter: MainActivity.java, CategorySelection.java samt QuizActivity.java.
 
 MainActivity.java är där applikationen börjar, och dess ansvar är att tillåta användaren att ange
-adressen till en server. Felhantering i form av tomt fält, ogiltig URL eller adress till en 
+adressen till en server. Felhantering i form av tomt fält, ogiltig URL eller adress till en
 ogiltig server sker här. Om en godkänd adress anges sparas denna. Därefter slussas
 användaren vidare till CategorySelectionActivity. Om en adress finns sparad sedan tidigare sker
 detta omedelbart.
@@ -53,4 +58,3 @@ Både MainActivity and CategorySelectionActivity använder sig av Google's exter
 bibliotek Volley för att hantera alla HTTP-requests, samt Firebase för att hantera
 loggning av användarnas aktivitet som utgör en grund för att kunna analysera
 användarnas utnyttjande av applikationen.
-
