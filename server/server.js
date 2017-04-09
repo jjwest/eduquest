@@ -1,3 +1,6 @@
+// This is a minimalistic provider intended
+// for testing purposes
+
 const express = require("express")
 const bodyParser = require("body-parser")
 const app = express()
